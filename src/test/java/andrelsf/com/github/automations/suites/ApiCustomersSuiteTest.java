@@ -160,7 +160,19 @@ public class ApiCustomersSuiteTest extends RestAssuredBaseTest {
   }
 
   @Test
-  public void t008_getANewCustomerRegistered_shouldReturn_200_withCustomerAccountDetails() {
+  public void t008_tryRegisterSameClient_shouldReturn_409_conflict() {
+    given()
+        .body(postCustomerRequest)
+        .when()
+        .post()
+        .then()
+        .assertThat().statusCode(409)
+        .assertThat().body("code", is(409))
+        .assertThat().body("message", is("CPF already registered"));
+  }
+
+  @Test
+  public void t009_getANewCustomerRegistered_shouldReturn_200_withCustomerAccountDetails() {
     final String newCustomerId = TestUtil.getCustomerIdFromURILocation(uriLocation);
     given()
         .pathParam("accountId", newCustomerId)
@@ -181,7 +193,7 @@ public class ApiCustomersSuiteTest extends RestAssuredBaseTest {
   }
 
   @Test
-  public void t009_GETAllTransfers_fromBobAccount_shouldReturn_200_withListGreaterThan_2() {
+  public void t010_GETAllTransfers_fromBobAccount_shouldReturn_200_withListGreaterThan_2() {
     final TransferResponse[] transfers = given()
         .pathParam("accountId", bobAccountId)
         .when()
@@ -203,7 +215,7 @@ public class ApiCustomersSuiteTest extends RestAssuredBaseTest {
   }
 
   @Test
-  public void t010_InactivateCustomerByID_shouldReturn_204_noContent() {
+  public void t011_InactivateCustomerByID_shouldReturn_204_noContent() {
     final String newCustomerId = TestUtil.getCustomerIdFromURILocation(uriLocation);
     given()
         .pathParam("accountId", newCustomerId)
